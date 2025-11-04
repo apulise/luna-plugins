@@ -1,5 +1,5 @@
 import { LunaUnload, reduxStore, Tracer } from "@luna/core";
-import { ipcRenderer, MediaItem, PlayState, redux, safeInterval } from "@luna/lib";
+import { ipcRenderer, PlayState, redux, safeInterval } from "@luna/lib";
 import type { MediaItem } from "@luna/lib";
 import { startServer, stopServer, updateFields } from "./index.native";
 import { settings } from "./Settings";
