@@ -34,8 +34,7 @@ const updateMediaFields = async (item: MediaItem) => {
         pItems.isrc()
     ]);
     const { duration, bestQuality, tidalItem } = pItems;
-    //const items = { album: album?.tidalAlbum, artist: artist?.tidalArtist, track: tidalItem, coverUrl, isrc, duration, bestQuality };
-    const items = {bestQuality };
+    const items = { album: album?.tidalAlbum, artist: artist?.tidalArtist, track: tidalItem, coverUrl, isrc, duration, bestQuality };
     update(items);
 }
 MediaItem.fromPlaybackContext().then((item) => item && updateMedia(item));
@@ -51,9 +50,9 @@ const interval = setInterval(() => {
 }, 250);
 
 const updateStateFields = () => {
-    const { playing, playTime, repeatMode, lastPlayStart, playQueue, shuffle } = PlayState;
+    const { playing } = PlayState;
     const currentTime = getCurrentPlaybackTime();
-    const items: any = { playing, playTime, repeatMode, playQueue, shuffle };
+    const items: any = { playing };
     if (!Number.isNaN(currentTime) && !doesIPCWork) items.currentTime = currentTime;
     if (lastPlayStart && !Number.isNaN(lastPlayStart)) items.lastPlayStart = lastPlayStart;
     const { playbackControls } = redux.store.getState();
