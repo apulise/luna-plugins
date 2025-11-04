@@ -1,10 +1,10 @@
 {
-    "name": "@vmohammad/api",
+    "name": "@apulise/api",
     "description": "Creates an API for Tidal",
     "author": {
-        "name": "vMohammad",
-        "url": "https://vmohammad.dev",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/62218284?v=4"
+        "name": "apulise",
+        "url": "https://4gxs.site",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/56741649?v=4"
     },
     "main": "./src/index.ts",
     "type": "module"
