@@ -38,9 +38,7 @@ const updateMediaFields = async (item: MediaItem) => {
     update(items);
 }
 
-MediaItem.onMediaTransition(unloads, async (item) =>
-    updateMediaFields(item)
-);
+
 
 let doesIPCWork = false;
 const interval = setInterval(() => {
