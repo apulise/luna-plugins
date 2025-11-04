@@ -34,10 +34,11 @@ const updateMediaFields = async (item: MediaItem) => {
         pItems.isrc()
     ]);
     const { duration, bestQuality, tidalItem } = pItems;
-    const items = { album: album?.tidalAlbum, artist: artist?.tidalArtist, track: tidalItem, coverUrl, isrc, duration, bestQuality };
-    updateFields(items);
+    //const items = { album: album?.tidalAlbum, artist: artist?.tidalArtist, track: tidalItem, coverUrl, isrc, duration, bestQuality };
+    const items = {bestQuality };
+    update(items);
 }
-MediaItem.fromPlaybackContext().then((item) => item && updateMediaFields(item));
+MediaItem.fromPlaybackContext().then((item) => item && updateMedia(item));
 MediaItem.onMediaTransition(unloads, async (item) =>
     updateMediaFields(item)
 );
