@@ -1,10 +1,12 @@
 import { LunaUnload, reduxStore, Tracer } from "@luna/core";
 import { ipcRenderer, MediaItem, PlayState, redux, safeInterval } from "@luna/lib";
+import type { MediaItem } from "@luna/lib";
 import { startServer, stopServer, updateFields } from "./index.native";
 import { settings } from "./Settings";
 export const { trace } = Tracer("[API]");
 export const unloads = new Set<LunaUnload>();
 export { Settings } from "./Settings";
+const unloads = new Set<LunaUnload>();
 
 startServer(settings.port || 24123)
 
@@ -50,7 +52,12 @@ const updateStateFields = () => {
     const items: any = { playing };
     const { playbackControls } = redux.store.getState();
     if (playbackControls.volume) items.volume = playbackControls.volume;
-    items.quality = MediaItem.bestQuality.audioQuality;
+    const quality = MediaItem.bestQuality;
+	MediaItem.withFormat(unloads, quality.audioQuality, ({ sampleRate, bitDepth, bitrate }) => {
+		if (!!sampleRate) items.sampleRateContent = `${sampleRate / 1000}kHz`;
+		if (!!bitDepth) items.bitDepthContent = `${bitDepth}bit`;
+		if (!!bitrate) items.bitrateContent = `${Math.floor(bitrate / 1000).toLocaleString()}kbps`;
+	});
     updateFields(items);
 }
 
