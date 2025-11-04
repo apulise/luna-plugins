@@ -50,8 +50,8 @@ const interval = setInterval(() => {
 }, 250);
 
 const updateStateFields = () => {
-    const { playing, playTime, repeatMode, lastPlayStart, playQueue, shuffle } = PlayState;
-    const items: any = { playing, playTime, repeatMode, playQueue, shuffle };
+    const { playing  } = PlayState;
+    const items: any = { playing };
     const { playbackControls } = redux.store.getState();
     if (playbackControls.volume) items.volume = playbackControls.volume;
     updateFields(items);
