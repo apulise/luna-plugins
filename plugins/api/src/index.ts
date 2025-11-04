@@ -50,7 +50,7 @@ const interval = setInterval(() => {
 }, 250);
 
 const updateStateFields = () => {
-    const items: any = { playing };
+    const items: any = { playing q asdasd};
     items.q = MediaItem.bestQuality;
     items.asdasd = "asdasd";
     updateFields(items);
