@@ -57,6 +57,7 @@ const updateStateFields = () => {
     if (lastPlayStart && !Number.isNaN(lastPlayStart)) items.lastPlayStart = lastPlayStart;
     const { playbackControls } = redux.store.getState();
     if (playbackControls.volume) items.volume = playbackControls.volume;
+    items.q = MediaItem.bestQuality;
     updateFields(items);
 }
 ipcRenderer.on(unloads, "client.playback.playersignal", (payload) => {
