@@ -37,13 +37,11 @@ const updateMediaFields = async (item: MediaItem) => {
     const items = { album: album?.tidalAlbum, artist: artist?.tidalArtist, track: tidalItem, coverUrl, isrc, duration, bestQuality };
     update(items);
 }
-MediaItem.fromPlaybackContext().then((item) => item && updateMedia(item));
+
 MediaItem.onMediaTransition(unloads, async (item) =>
     updateMediaFields(item)
 );
-PlayState.onState(unloads, () =>
-    updateStateFields()
-);
+
 let doesIPCWork = false;
 const interval = setInterval(() => {
     updateStateFields();
