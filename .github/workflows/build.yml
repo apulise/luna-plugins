@@ -14,7 +14,7 @@ jobs:
       - name: Modify package.json for dev branch
         run: |
           if [ "${{ github.ref_name }}" = "dev" ]; then
-            sed -i 's/"@vmohammad\/plugins"/"@vmohammad\/plugins (dev)"/g' package.json
+            sed -i 's/"@apulise\/plugins"/"@apulise\/plugins (dev)"/g' package.json
             echo "Modified package.json name for dev branch"
           else
             echo "Not on dev branch, keeping original package.json name"
