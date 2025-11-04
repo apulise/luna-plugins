@@ -50,132 +50,19 @@ const interval = setInterval(() => {
 }, 250);
 
 const updateStateFields = () => {
-    const items: any = { playing q asdasd};
-    items.q = MediaItem.bestQuality;
-    items.asdasd = "asdasd";
+    const { playing, playTime, repeatMode, lastPlayStart, playQueue, shuffle } = PlayState;
+    const items: any = { playing, playTime, repeatMode, playQueue, shuffle };
+    const { playbackControls } = redux.store.getState();
+    if (playbackControls.volume) items.volume = playbackControls.volume;
     updateFields(items);
 }
-ipcRenderer.on(unloads, "client.playback.playersignal", (payload) => {
-    const { time: currentTime } = payload;
-    if (currentTime && !Number.isNaN(currentTime)) {
-        updateFields({ currentTime });
-        doesIPCWork = true;
-    }
-})
+
 unloads.add(() => {
     clearInterval(interval);
 });
 
-let currentTime = 0;
-let previousTime = -1;
-let lastUpdated = Date.now();
-let mpvTime = 0;
-const getCurrentPlaybackTime = (): number => {
-    if ('mpvEnabled' in window && window.mpvEnabled()) return mpvTime;
-    const audioElement = document.querySelector('audio') as HTMLAudioElement;
-    if (audioElement && audioElement.currentTime) {
-        currentTime = audioElement.currentTime;
-        previousTime = -1;
-        return currentTime;
-    }
-
-    const progressBar = document.querySelector('[data-test="progress-bar"]') as HTMLElement;
-    if (progressBar) {
-        const ariaValueNow = progressBar.getAttribute('aria-valuenow');
-        if (ariaValueNow !== null) {
-            const progressTime = Number.parseInt(ariaValueNow);
-            const now = Date.now();
-
-            if (progressTime !== previousTime) {
-                currentTime = progressTime;
-                previousTime = progressTime;
-                lastUpdated = now;
-            } else if (PlayState.playing) {
-                const elapsedSeconds = (now - lastUpdated) / 1000;
-                currentTime = progressTime + elapsedSeconds;
-            }
-            return currentTime;
-        } else {
-            trace.msg.warn("Progress bar not found or aria-valuenow is null");
-            return currentTime;
-        }
-    }
-
-    return currentTime;
-};
 
 ipcRenderer.on(unloads, "api.playback.control", async (data) => {
-    switch (data.action) {
-        case "pause":
-            PlayState.pause();
-            break;
-        case "resume":
-            PlayState.play();
-            break;
-        case "toggle":
-            if (PlayState.playing) {
-                PlayState.pause();
-            } else {
-                PlayState.play();
-            }
-            break;
-        case "next":
-            PlayState.next();
-            break;
-        case "previous":
-            PlayState.previous();
-            break;
-        case "setRepeatMode":
-            if (typeof data.mode === "number") {
-                PlayState.setRepeatMode(data.mode);
-            }
-            break;
-        case "setShuffleMode":
-            if (typeof data.shuffle === "boolean") {
-                if (data.shuffle) {
-                    PlayState.setShuffle(true, true);
-                } else {
-                    PlayState.setShuffle(false, true);
-                }
-            }
-            break;
-        case "seek":
-            if (typeof data.time === "number") {
-                PlayState.seek(data.time);
-            }
-            break;
-        case "volume":
-            if (typeof data.volume === "string" && /^[-+]\d+$/.test(data.volume)) {
-                const volChange = Number.parseInt(data.volume, 10);
-                const currentVol = reduxStore.getState().playbackControls.volume || 0;
-                let newVol = currentVol + volChange;
-                newVol = Math.max(0, Math.min(100, newVol));
-                redux.actions["playbackControls/SET_VOLUME"]({
-                    volume: newVol,
-                });
-            } else if (typeof data.volume === "number" && data.volume >= 0 && data.volume <= 100) {
-                redux.actions["playbackControls/SET_VOLUME"]({
-                    volume: data.volume,
-                });
-            }
-            break;
-        case "playNext":
-            if (data.itemId) {
-                PlayState.playNext(data.itemId);
-            }
-            break;
-        case "addToQueue":
-            const { itemId } = data;
-            if (!itemId) return;
-            redux.actions["playQueue/ADD_LAST"]({
-                context: {
-                    type: "UNKNOWN",
-                    id: itemId,
-                },
-                mediaItemIds: [itemId],
-            });
-            break;
-    }
     updateStateFields();
 });
 
