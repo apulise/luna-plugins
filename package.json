@@ -1,8 +1,8 @@
 {
-	"name": "@vmohammad/plugins",
+	"name": "@apulise/plugins",
 	"description": "A collection of plugins for TidaLuna made by vMohammad",
 	"type": "module",
-	"author": "vMohammad",
+	"author": "apulise",
 	"scripts": {
 		"watch": "concurrently \"pnpm:build --watch\" pnpm:serve",
 		"build": "rimraf ./dist && tsx esbuild.config.ts",
