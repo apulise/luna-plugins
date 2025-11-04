@@ -50,7 +50,7 @@ const updateStateFields = () => {
     const items: any = { playing };
     const { playbackControls } = redux.store.getState();
     if (playbackControls.volume) items.volume = playbackControls.volume;
-    items.quality = MediaItem.bestQuality.audioQuality
+    items.quality = MediaItem.bestQuality.audioQuality;
     updateFields(items);
 }
 
