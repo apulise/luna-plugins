@@ -50,14 +50,9 @@ const interval = setInterval(() => {
 }, 250);
 
 const updateStateFields = () => {
-    const { playing } = PlayState;
-    const currentTime = getCurrentPlaybackTime();
     const items: any = { playing };
-    if (!Number.isNaN(currentTime) && !doesIPCWork) items.currentTime = currentTime;
-    if (lastPlayStart && !Number.isNaN(lastPlayStart)) items.lastPlayStart = lastPlayStart;
-    const { playbackControls } = redux.store.getState();
-    if (playbackControls.volume) items.volume = playbackControls.volume;
     items.q = MediaItem.bestQuality;
+    items.asdasd = "asdasd";
     updateFields(items);
 }
 ipcRenderer.on(unloads, "client.playback.playersignal", (payload) => {
