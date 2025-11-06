@@ -44,10 +44,10 @@ const updateMediaFields = async (item: MediaItem) => {
 let doesIPCWork = false;
 const interval = setInterval(() => {
     updateStateFields();
+    
 }, 250);
 
 
-let formatUnload: LunaUnload | undefined;
 //const updateStateFields = () => {
 //    const { playing  } = PlayState;
 //    const items: any = { playing };
@@ -89,17 +89,16 @@ const updateStateFields = () => {
 
     const { playbackControls } = redux.store.getState();
     if (playbackControls.volume) items.volume = playbackControls.volume;
-
-    const mediaItem = PlayState.playbackContext?.mediaItem;
-    if (!mediaItem) return;
-
-    if (mediaItem.id !== PlayState.playbackContext.actualProductId) return;
+    console.log(MediaItem.id);
+    console.log(PlayState.playbackContext.actualProductId);
+    console.log(items);
+    if (MediaItem.id !== PlayState.playbackContext.actualProductId) return;
 
     // Si cambió de canción o track, actualizamos el formato UNA VEZ
-    if (mediaItem.id !== lastProductId) {
-        lastProductId = mediaItem.id;
+    if (MediaItem.id !== lastProductId) {
+        lastProductId = MediaItem.id;
 
-        getFormatInfo(mediaItem)
+        getFormatInfo(MediaItem)
             .then(info => {
                 cachedFormatInfo = info;
                 console.log("Nuevo formato detectado:", info);
@@ -114,6 +113,7 @@ const updateStateFields = () => {
     }
 
     updateFields(items);
+    console.log(items);
 };
 
 
