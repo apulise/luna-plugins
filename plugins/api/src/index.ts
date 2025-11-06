@@ -95,9 +95,9 @@ export const updateMediaFields = async (item: MediaItem) => {
 
     // --- OBJETO FINAL ---
     const items = {
-        album: album?.tidalAlbum,
-        artist: artist?.tidalArtist,
-        track: tidalItem,
+        album: album?.tidalAlbum.title,
+        artist: artist?.tidalArtist.name,
+        track: tidalItem.title,
         coverUrl,
         isrc,
         duration,
