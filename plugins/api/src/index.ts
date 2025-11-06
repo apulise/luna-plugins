@@ -105,7 +105,7 @@ export const updateMediaFields = async (item: MediaItem) => {
         format: formatInfo ?? null,
     };
 
-    update(items);
+    updateFields(items);
 };
 
 
