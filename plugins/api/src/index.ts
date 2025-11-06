@@ -1,6 +1,5 @@
 import { LunaUnload, reduxStore, Tracer } from "@luna/core";
-import { ipcRenderer, PlayState, redux, safeInterval } from "@luna/lib";
-import type { MediaItem } from "@luna/lib";
+import { ipcRenderer, PlayState, redux, safeInterval, observePromise, Quality, type MediaItem } from "@luna/lib";
 import { startServer, stopServer, updateFields } from "./index.native";
 import { settings } from "./Settings";
 export const { trace } = Tracer("[API]");
@@ -47,19 +46,65 @@ const interval = setInterval(() => {
     updateStateFields();
 }, 250);
 
-const updateStateFields = () => {
-    const { playing  } = PlayState;
+
+let formatUnload: LunaUnload | undefined;
+//const updateStateFields = () => {
+//    const { playing  } = PlayState;
+//    const items: any = { playing };
+//    const { playbackControls } = redux.store.getState();
+//    if (playbackControls.volume) items.volume = playbackControls.volume;
+//    if (mediaItem.id != PlayState.playbackContext.actualProductId) return;
+//	const audioQuality = PlayState.playbackContext.actualAudioQuality;
+//
+//    updateFields(items);
+//}
+const getFormatInfo = async (mediaItem: MediaItem) => {
+    return new Promise((resolve, reject) => {
+        let cleanup: (() => void) | undefined;
+
+        // Nos suscribimos a la información del formato
+        cleanup = mediaItem.withFormat(unloads, PlayState.playbackContext.actualAudioQuality, (info) => {
+            cleanup?.(); // nos desuscribimos una vez recibida la info
+            resolve({
+                sampleRate: info.sampleRate ?? null,
+                bitDepth: info.bitDepth ?? null,
+                bitrate: info.bitrate ?? null,
+            });
+        });
+
+        // Forzamos actualización de formato
+        mediaItem.updateFormat().catch(err => {
+            cleanup?.();
+            reject(err);
+        });
+    });
+};
+
+const updateStateFields = async () => {
+    const { playing } = PlayState;
     const items: any = { playing };
+
     const { playbackControls } = redux.store.getState();
     if (playbackControls.volume) items.volume = playbackControls.volume;
-    const quality = MediaItem.bestQuality;
-	MediaItem.withFormat(unloads, quality.audioQuality, ({ sampleRate, bitDepth, bitrate }) => {
-		if (!!sampleRate) items.sampleRateContent = `${sampleRate / 1000}kHz`;
-		if (!!bitDepth) items.bitDepthContent = `${bitDepth}bit`;
-		if (!!bitrate) items.bitrateContent = `${Math.floor(bitrate / 1000).toLocaleString()}kbps`;
-	});
+
+    const mediaItem = PlayState.playbackContext?.mediaItem;
+    if (!mediaItem) return;
+
+    if (mediaItem.id !== PlayState.playbackContext.actualProductId) return;
+
+    items.audioQuality = PlayState.playbackContext.actualAudioQuality;
+
+    try {
+        // 🔹 Obtener la información de formato del mediaItem
+        const format = await getFormatInfo(mediaItem);
+        items.format = format; // añadimos al resultado
+    } catch (err) {
+        items.formatError = (err as Error).message;
+    }
+
+    // Envía o guarda el resultado
     updateFields(items);
-}
+};
 
 unloads.add(() => {
     clearInterval(interval);
