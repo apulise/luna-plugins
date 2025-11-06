@@ -104,7 +104,7 @@ export const updateMediaFields = async (item: MediaItem) => {
         bestQuality,
         format: formatInfo ?? null,
     };
-
+    console.log(items);
     updateFields(items);
 };
 
