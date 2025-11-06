@@ -5,7 +5,7 @@ import { settings } from "./Settings";
 export const { trace } = Tracer("[API]");
 export const unloads = new Set<LunaUnload>();
 export { Settings } from "./Settings";
-const unloads = new Set<LunaUnload>();
+
 
 startServer(settings.port || 24123)
 
